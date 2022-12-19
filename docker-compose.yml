@@ -1,0 +1,15 @@
+# version: "3.7" # Uncomment for older compose versions
+services:
+  db:
+    image: postgres:15.1-bullseye
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: bahn_alarm
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: always
+    ports:
+      - 8080:8080
