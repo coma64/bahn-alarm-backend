@@ -8,7 +8,6 @@ from app.main import app
 
 @pytest.fixture(scope="function")
 def testclient():
-
     with TestClient(app) as client:
         # Application 'startup' handlers are called on entering the block.
         yield client

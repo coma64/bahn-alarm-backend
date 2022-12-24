@@ -7,10 +7,7 @@ from app import db_api
 from app.schemas import bahn as schemas
 
 
-router = APIRouter(
-    prefix='/bahn',
-    tags=['bahn'],
-)
+router = APIRouter()
 
 
 @router.get("/stations", response_model=schemas.ReadStationsResponse)
@@ -28,6 +25,7 @@ def read_connections(
 ) -> schemas.ReadConnectionsResponse:
     return schemas.ReadConnectionsResponse(
         connections=[
-            schemas.Connection.from_db_api(c) for c in db_api.fetch_connections(origin, destination, departure)
+            schemas.Connection.from_db_api(c)
+            for c in db_api.fetch_connections(origin, destination, departure)
         ],
     )

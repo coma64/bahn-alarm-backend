@@ -7,7 +7,6 @@ def test_root_endpoint(testclient: TestClient):
 
 
 def test_read_item(testclient: TestClient):
-
     r = testclient.get("/items/1", params={"q": "query"})
     assert r.status_code == 200, r.text
     assert r.json()["item_id"] == 1

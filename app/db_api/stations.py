@@ -7,7 +7,7 @@ class Station(BaseModel):
     name: str = Field(..., alias="value")
     id: str
     weight: int
-    type: str = Field(..., alias='typeStr')
+    type: str = Field(..., alias="typeStr")
 
 
 def fetch_stations(name: str, limit=10) -> list[Station]:

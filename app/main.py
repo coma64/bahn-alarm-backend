@@ -6,9 +6,24 @@ https://fastapi.tiangolo.com/
 from fastapi import FastAPI
 
 from app.database import init_tortoise
-from app.routers import bahn
+from app.routers import bahn, tracked_connections, authentication
+
 
 app = FastAPI()
 init_tortoise(app)
 
-app.include_router(bahn.router)
+app.include_router(
+    prefix="/bahn",
+    tags=["bahn"],
+    router=bahn.router,
+)
+app.include_router(
+    prefix="/tracking/connections",
+    tags=["tracking"],
+    router=tracked_connections.router,
+)
+app.include_router(
+    prefix="/authentication",
+    tags=["authentication"],
+    router=authentication.router,
+)
