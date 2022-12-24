@@ -4,11 +4,16 @@ from fastapi import FastAPI
 from app import settings
 
 
+ORM_SETTINGS = {
+    "connections": {"default": settings.db_url},
+    "apps": {
+        "models": {
+            "models": ["app.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
+
+
 def init_tortoise(app: FastAPI) -> None:
-    register_tortoise(
-        app,
-        db_url=settings.db_url,
-        modules={"models": ["app.models"]},
-        generate_schemas=settings.development_mode,
-        add_exception_handlers=settings.development_mode,
-    )
+    register_tortoise(app, config=ORM_SETTINGS)

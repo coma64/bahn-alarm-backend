@@ -22,6 +22,7 @@ tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.5"
+aerich = "^0.7.1"
 
 
 [tool.poetry.dev-dependencies]
@@ -74,3 +75,8 @@ force_grid_wrap = 0
         "# noqa",
         "raise NotImplementedError"
     ]
+
+[tool.aerich]
+tortoise_orm = "app.database.ORM_SETTINGS"
+location = "./migrations"
+src_folder = "./."
