@@ -1,9 +1,10 @@
 from tortoise.contrib.fastapi import register_tortoise
 from fastapi import FastAPI
 
-from .settings import settings
+from app import settings
 
-def configure_tortoise(app: FastAPI) -> None:
+
+def init_tortoise(app: FastAPI) -> None:
     register_tortoise(
         app,
         db_url=settings.db_url,

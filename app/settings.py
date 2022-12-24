@@ -6,4 +6,4 @@ class _Settings(BaseSettings):
     db_url: str
 
 
-settings = _Settings()
+settings = _Settings(['default.env', 'override.env'])

@@ -13,18 +13,18 @@ maintainers = [""]
 [tool.poetry.dependencies]
 python = "^3.7"
 
-fastapi = "0.52.0"
+fastapi = "0.88.0"
 gunicorn = "^20.0.4"
-uvicorn = "^0.11.3"
+uvicorn = "^0.20.0"
 schiene = "^0.26"
-tortoise = "^0.1.1"
+pydantic = {extras = ["dotenv"], version = "^1.10.2"}
 tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
 
 
 [tool.poetry.dev-dependencies]
-coverage = { version = "5.0.3", extras = ["toml"]}
-black = "^19.10b0"
-isort = { version = "^4.3.21", extras = ["pyproject"]}
+coverage = { version = "7.0.0", extras = ["toml"]}
+black = "^23.1a1"
+isort = { version = "^5.11.3", extras = ["pyproject"]}
 requests = "^2.23.0"
 
 

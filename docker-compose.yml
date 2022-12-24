@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: bahn_alarm
   adminer:
+    profiles: ['adminer']
     image: adminer:4.8.1-standalone
     restart: always
     ports:

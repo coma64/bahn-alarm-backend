@@ -13,10 +13,6 @@ class User(models.Model):
         exclude = ["password_hash"]
 
 
-User_Pydantic = pydantic_model_creator(User, name="User")
-UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
-
-
 class TrackedConnection(models.Model):
     tracked_by: fields.ManyToManyRelation[User] = fields.ManyToManyField(
         "models.User",
@@ -26,8 +22,10 @@ class TrackedConnection(models.Model):
     )
     origin_station = fields.CharField(max_length=255)
     destination_station = fields.CharField(max_length=255)
-    hours = fields.SmallIntField()
-    minutes = fields.SmallIntField()
+    hour = fields.SmallIntField()
+    minute = fields.SmallIntField()
 
 
+User_Pydantic = pydantic_model_creator(User, name="User")
+UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
 TrackedConnection_Pydantic = pydantic_model_creator(TrackedConnection, name="TrackedConnection")

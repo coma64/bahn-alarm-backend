@@ -42,8 +42,8 @@ class Connection(BaseModel):
     departure: BahnTime
     arrival: BahnTime
     duration: timedelta = Field(..., alias="time")
-    ontime: bool
-    canceled: bool
+    on_time: bool = Field(..., alias='ontime')
+    is_canceled: bool = Field(..., alias='canceled')
     delay: Delay
 
     parse_departure = validator("departure", pre=True, allow_reuse=True)(
