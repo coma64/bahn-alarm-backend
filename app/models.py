@@ -68,6 +68,9 @@ class TrackedConnection(models.Model):
     hours = fields.SmallIntField()
     minutes = fields.SmallIntField()
 
+    class Meta:
+        unique_together = [["origin_station", "destination_station", "hours", "minutes"]]
+
 
 def _create_partial_input_model(
     model: t.Type[models.Model],
