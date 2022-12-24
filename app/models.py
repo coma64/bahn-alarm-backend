@@ -1,6 +1,6 @@
 import typing as t
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator, pydantic_queryset_creator
 
@@ -90,6 +90,7 @@ User_Pydantic = pydantic_model_creator(User, name="User")
 class UserIn_Pydantic(
     pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
 ):
+    name: str = Field(..., min_length=3)
     password: str
 
 
