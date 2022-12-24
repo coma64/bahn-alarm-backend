@@ -1,18 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
 from tortoise.exceptions import DoesNotExist
 from tortoise.expressions import Q
 
-from app import models
+from app import models, deps
 from app import responses
 
 router = APIRouter()
 
 
 @router.get("/{connection_id}", responses=responses.NOT_FOUND)
-async def read(connection_id: int) -> models.TrackedConnection_Pydantic:
+async def read(
+    connection_id: int, user: models.User = Depends(deps.get_current_user)
+) -> models.TrackedConnection_Pydantic:
     try:
         return await models.TrackedConnection_Pydantic.from_queryset_single(
-            models.TrackedConnection.get(id=connection_id)
+            models.TrackedConnection.filter(tracked_by=user).get(id=connection_id)
         )
     except DoesNotExist as e:
         raise responses.NOT_FOUND_EXCEPTION from e
@@ -20,48 +22,42 @@ async def read(connection_id: int) -> models.TrackedConnection_Pydantic:
 
 @router.get("", response_model=list[models.TrackedConnection_Pydantic])
 async def read_list(
-    name: str | None = None, offset: int = 0, limit: int = 50
+    station: str | None = None, user: models.User = Depends(deps.get_current_user)
 ) -> list[models.TrackedConnection_Pydantic]:
-    connections = models.TrackedConnection.all().offset(offset).limit(limit)
-    if name:
+    connections = models.TrackedConnection.filter(tracked_by=user)
+    if station:
         connections = connections.filter(
-            Q(origin_station__icontains=name) | Q(destination_station__icontains=name),
+            Q(origin_station__icontains=station)
+            | Q(destination_station__icontains=station),
         )
 
     return await models.TrackedConnection_Pydantic.from_queryset(connections)
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create(
     connection: models.TrackedConnectionIn_Pydantic,
-) -> models.TrackedConnection_Pydantic:
-    model = await models.TrackedConnection.create(**connection.dict(exclude_unset=True))
-    return await models.TrackedConnection_Pydantic.from_tortoise_orm(model)
+    user: models.User = Depends(deps.get_current_user),
+) -> None:
+    obj, _ = await models.TrackedConnection.get_or_create(
+        **connection.dict(exclude_unset=True)
+    )
+    await obj.tracked_by.add(user)
 
 
-@router.put("", responses=responses.NOT_FOUND)
-async def update(
-    connection_id: int, updates: models.TrackedConnectionIn_Pydantic
-) -> models.TrackedConnection_Pydantic:
+@router.delete(
+    "/{connection_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses=responses.NOT_FOUND,
+)
+async def delete(
+    connection_id: int, user: models.User = Depends(deps.get_current_user)
+) -> None:
     try:
-        connection = await models.TrackedConnection.get(id=connection_id)
-        await connection.update_from_dict(updates.dict()).save()
-        return await models.TrackedConnection_Pydantic.from_tortoise_orm(connection)
+        obj = await models.TrackedConnection.get(pk=connection_id)
     except DoesNotExist as e:
         raise responses.NOT_FOUND_EXCEPTION from e
 
-
-@router.patch("", responses=responses.NOT_FOUND)
-async def partial_update(
-    connection_id: int, connection: models.TrackedConnectionInPartial_Pydantic
-) -> models.TrackedConnection_Pydantic:
-    try:
-        connection_object = await models.TrackedConnection.get(id=connection_id)
-        await connection_object.update_from_dict(
-            connection.dict(exclude_unset=True)
-        ).save()
-        return await models.TrackedConnection_Pydantic.from_tortoise_orm(
-            connection_object
-        )
-    except DoesNotExist as e:
-        raise responses.NOT_FOUND_EXCEPTION from e
+    await obj.tracked_by.remove(user)
+    if await obj.tracked_by.all().count() == 0:
+        await obj.delete()
