@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from tortoise.exceptions import DoesNotExist
 from tortoise.expressions import Q
 
-from app import models, deps
+from app import models, deps, tasks
 from app import responses
 
 router = APIRouter()
@@ -12,6 +12,8 @@ router = APIRouter()
 async def read(
     connection_id: int, user: models.User = Depends(deps.get_current_user)
 ) -> models.TrackedConnection_Pydantic:
+    tasks.hello_world.send("karl")
+
     try:
         return await models.TrackedConnection_Pydantic.from_queryset_single(
             models.TrackedConnection.filter(tracked_by=user).get(id=connection_id)

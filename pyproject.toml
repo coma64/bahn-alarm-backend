@@ -23,6 +23,7 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.5"
 aerich = "^0.7.1"
+dramatiq = {extras = ["redis", "watch"], version = "^1.13.0"}
 
 
 [tool.poetry.dev-dependencies]
