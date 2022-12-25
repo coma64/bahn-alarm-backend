@@ -44,7 +44,7 @@ async def create(
     )
     await obj.tracked_by.add(user)
 
-    tasks.fetch_connection_delay_info.send(obj.pk)
+    tasks.fetch_connection_delay_infos.send([obj.pk])
 
 
 @router.delete(

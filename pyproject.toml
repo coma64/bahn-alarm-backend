@@ -27,6 +27,8 @@ dramatiq = {extras = ["redis", "watch"], version = "^1.13.0"}
 structlog = "^22.3.0"
 better-exceptions = "^0.3.3"
 rich = "^12.6.0"
+periodiq = "^0.12.1"
+more-itertools = "^9.0.0"
 
 
 [tool.poetry.dev-dependencies]
