@@ -29,7 +29,7 @@ class Connection(BaseModel):
     departure: db_api.BahnTime
     arrival: db_api.BahnTime
     duration: timedelta
-    on_time: bool
+    is_on_time: bool
     is_canceled: bool
     delay: Delay
 

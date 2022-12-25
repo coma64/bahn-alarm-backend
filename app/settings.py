@@ -6,6 +6,7 @@ class _Settings(BaseSettings):
     db_url: str
     secret: str
     access_token_expire_days: int
+    redis_host: str
 
 
 settings = _Settings(["default.env", "override.env"])

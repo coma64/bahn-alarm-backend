@@ -1,4 +1,5 @@
 import typing as t
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 from tortoise import fields, models
@@ -63,13 +64,32 @@ class TrackedConnection(models.Model):
         through="tracked_connection_users",
         on_delete=fields.CASCADE,
     )
-    origin_station = fields.CharField(max_length=255)
-    destination_station = fields.CharField(max_length=255)
-    hours = fields.SmallIntField()
-    minutes = fields.SmallIntField()
+    origin_station: str = fields.CharField(max_length=255)
+    destination_station: str = fields.CharField(max_length=255)
+    hours: int = fields.SmallIntField()
+    minutes: int = fields.SmallIntField()
+
+    delay_info: fields.OneToOneRelation["ConnectionDelayInfo"]
 
     class Meta:
-        unique_together = [["origin_station", "destination_station", "hours", "minutes"]]
+        unique_together = [
+            ["origin_station", "destination_station", "hours", "minutes"]
+        ]
+
+
+class ConnectionDelayInfo(models.Model):
+    tracked_connection: fields.OneToOneRelation[
+        TrackedConnection
+    ] = fields.OneToOneField(
+        "models.TrackedConnection",
+        related_name="delay_info",
+        on_delete=fields.CASCADE,
+    )
+    is_on_time: bool = fields.BooleanField()
+    is_canceled: bool = fields.BooleanField()
+    delay_departure_minutes: int = fields.IntField()
+    delay_arrival_minutes: int = fields.IntField()
+    modified_at: datetime = fields.DatetimeField(auto_now=True)
 
 
 def _create_partial_input_model(

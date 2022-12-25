@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 
 from pydantic import BaseModel, validator, Field, parse_obj_as, PrivateAttr
 
-from .client import client
+from app import models
+from app.db_api.client import client
 
 
 BAHN_TIME_REGEX = re.compile(r"(?P<hours>\d\d?):(?P<minutes>\d\d)")
@@ -42,9 +43,9 @@ class Connection(BaseModel):
     departure: BahnTime
     arrival: BahnTime
     duration: timedelta = Field(..., alias="time")
-    on_time: bool = Field(..., alias="ontime")
+    is_on_time: bool = Field(..., alias="ontime")
     is_canceled: bool = Field(..., alias="canceled")
-    delay: Delay
+    delay: Delay | None
 
     parse_departure = validator("departure", pre=True, allow_reuse=True)(
         parse_bahn_time(BahnTime)
@@ -57,10 +58,27 @@ class Connection(BaseModel):
     )
 
 
+# TODO: make async
 def fetch_connections(
     origin: str, destination: str, departure: t.Optional[datetime] = None
 ) -> list[Connection]:
     return parse_obj_as(
         list[Connection],
         client.connections(origin, destination, departure or datetime.now()),
+    )
+
+
+def get_matching_connection(
+    connections: list[Connection], tracked_connection: models.TrackedConnection
+) -> Connection | None:
+    return next(
+        (
+            c
+            for c in connections
+            if (
+                c.departure.hours == tracked_connection.hours
+                and c.departure.minutes == tracked_connection.minutes
+            )
+        ),
+        None,
     )
