@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
+import jose
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
@@ -40,6 +41,8 @@ def get_username(token: str) -> str | None:
             jwt.decode(token, settings.secret, algorithms=[JWT_ALGORITHM])
         )
     except ValidationError:
+        return
+    except jose.JWTError:
         return
 
     if parsed_jwt.exp < datetime.now(timezone.utc):

@@ -21,11 +21,15 @@ if INSIDE_DRAMATIQ:
 @dramatiq.actor(max_retries=0)
 @run_async
 async def fetch_connection_delay_infos(tracked_connection_ids: list[int]) -> None:
-    async for connection in models.TrackedConnection.filter(pk__in=tracked_connection_ids):
+    async for connection in models.TrackedConnection.filter(
+        pk__in=tracked_connection_ids
+    ):
         await db_api.fetch_connection_delay_info(connection)
 
 
 @dramatiq.actor(max_retries=0, periodic=cron("*/5 * * * *"))
 @run_async
 async def periodic_fetch_connection_delay_info() -> None:
-    dramatiq.group(chunked(await models.TrackedConnection.all().values_list("id", flat=True), 4))
+    dramatiq.group(
+        chunked(await models.TrackedConnection.all().values_list("id", flat=True), 4)
+    )

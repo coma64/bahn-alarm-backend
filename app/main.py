@@ -3,7 +3,8 @@ Minimal FastAPI application taken directly from the tutorial.
 https://fastapi.tiangolo.com/
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import init_tortoise_fastapi
 from app.routers import bahn, tracked_connections, authentication
@@ -11,6 +12,16 @@ from app.routers import bahn, tracked_connections, authentication
 
 app = FastAPI()
 init_tortoise_fastapi(app)
+
+origins = ["http://localhost:8000", "http://localhost:5000", "http://localhost:4173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(
     prefix="/bahn",

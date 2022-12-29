@@ -29,6 +29,7 @@ better-exceptions = "^0.3.3"
 rich = "^12.6.0"
 periodiq = "^0.12.1"
 more-itertools = "^9.0.0"
+pywebpush = "^1.14.0"
 
 
 [tool.poetry.dev-dependencies]
