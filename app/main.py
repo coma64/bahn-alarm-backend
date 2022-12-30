@@ -14,7 +14,12 @@ from app.tasks import tasks
 app = FastAPI()
 init_tortoise_fastapi(app)
 
-origins = ["http://localhost:8000", "http://localhost:5000", "http://localhost:4173", "http://localhost"]
+origins = [
+    "http://localhost:8000",
+    "http://localhost:5000",
+    "http://localhost:4173",
+    "http://localhost",
+]
 
 app.add_middleware(
     CORSMiddleware,
