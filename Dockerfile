@@ -77,7 +77,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 RUN mkdir /bahn-alarm
-COPY ./*.env /bahn-alarm
+COPY ./*.env /bahn-alarm/
 COPY ./app /bahn-alarm/app
 WORKDIR /bahn-alarm
 
