@@ -19,6 +19,7 @@ origins = [
     "http://localhost:5000",
     "http://localhost:4173",
     "http://localhost",
+    "https://ba.coma64.me",
 ]
 
 app.add_middleware(
