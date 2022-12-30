@@ -1,6 +1,6 @@
-import typing as t
-import functools
 import asyncio
+import functools
+import typing as t
 
 INSIDE_DRAMATIQ = False
 

@@ -2,11 +2,10 @@ import re
 import typing as t
 from datetime import datetime, timedelta
 
-from pydantic import BaseModel, validator, Field, parse_obj_as, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr, parse_obj_as, validator
 
 from app import models
 from app.db_api.client import client
-
 
 BAHN_TIME_REGEX = re.compile(r"(?P<hours>\d\d?):(?P<minutes>\d\d)")
 

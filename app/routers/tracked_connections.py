@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from tortoise.exceptions import DoesNotExist
 from tortoise.expressions import Q
 
-from app import models, deps, responses
+from app import deps, models, responses
 from app.tasks import tasks
 
 router = APIRouter()

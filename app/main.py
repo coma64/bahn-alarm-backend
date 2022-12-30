@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import settings
 from app.database import init_tortoise_fastapi
-from app.routers import bahn, tracked_connections, authentication
+from app.routers import authentication, bahn, tracked_connections
 from app.tasks import tasks
 
 app = FastAPI()

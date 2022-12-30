@@ -3,11 +3,11 @@ import json
 import dramatiq
 import structlog
 from dramatiq.brokers.redis import RedisBroker
-from periodiq import PeriodiqMiddleware, cron
 from more_itertools import chunked
+from periodiq import PeriodiqMiddleware, cron
 from pywebpush import webpush
 
-from app import models, db_api, database, settings
+from app import database, db_api, models, settings
 from app.tasks.run_async import INSIDE_DRAMATIQ, event_loop, run_async
 
 log = structlog.stdlib.get_logger()

@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 
 import structlog
 
-from app import models, db_api
-
+from app import db_api, models
 
 log = structlog.stdlib.get_logger()
 

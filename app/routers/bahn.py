@@ -6,7 +6,6 @@ from fastapi import APIRouter
 from app import db_api
 from app.schemas import bahn as schemas
 
-
 router = APIRouter()
 
 

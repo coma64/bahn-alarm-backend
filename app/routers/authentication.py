@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app import models, responses, deps
+from app import deps, models, responses
 from app.schemas import authentication as schemas
 
 router = APIRouter()
