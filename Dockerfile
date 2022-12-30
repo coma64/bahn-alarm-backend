@@ -79,6 +79,7 @@ RUN chmod +x /docker-entrypoint.sh
 RUN mkdir /bahn-alarm
 COPY ./*.env /bahn-alarm/
 COPY ./app /bahn-alarm/app
+COPY pyproject.toml /bahn-alarm/
 WORKDIR /bahn-alarm
 
 ENTRYPOINT /docker-entrypoint.sh $0 $@
