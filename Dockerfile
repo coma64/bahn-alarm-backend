@@ -89,18 +89,13 @@ COPY gunicorn_conf.py /gunicorn_conf.py
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Create user with the name poetry
-RUN groupadd -g 1500 poetry && \
-    useradd -m -u 1500 -g poetry poetry
-
 RUN mkdir /bahn-alarm
-COPY --chown=poetry:poetry ./*.env /bahn-alarm
-COPY --chown=poetry:poetry ./app /bahn-alarm/app
-USER poetry
+COPY ./*.env /bahn-alarm
+COPY ./app /bahn-alarm/app
 WORKDIR /bahn-alarm
 
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "app.main:app"]
+CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "--certfile=/certs/cert.pem", "--keyfile=/certs/privkey.pem", "app.main:app"]
 
 FROM production AS dramatiq
 
