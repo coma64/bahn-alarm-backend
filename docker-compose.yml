@@ -22,7 +22,7 @@ services:
       context: .
       target: production
     volumes:
-      - $CERT_DIR:/certs
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - 8000:8000
   dramatiq:
