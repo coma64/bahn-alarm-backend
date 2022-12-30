@@ -18,6 +18,7 @@ services:
     ports:
     - 6379:6379
   web:
+    container_name: bahn-alarm-web
     build:
       context: .
       target: production
