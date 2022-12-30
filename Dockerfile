@@ -57,12 +57,12 @@ RUN chmod +x /docker-entrypoint.sh
 WORKDIR $PYSETUP_PATH
 RUN poetry install
 
-WORKDIR /app
+WORKDIR /bahn-alarm
 COPY . .
 
 EXPOSE 8000
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "main:app"]
+CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "app.main:app"]
 
 
 # 'lint' stage runs black and isort
@@ -93,9 +93,19 @@ RUN chmod +x /docker-entrypoint.sh
 RUN groupadd -g 1500 poetry && \
     useradd -m -u 1500 -g poetry poetry
 
-COPY --chown=poetry:poetry ./app /app
+RUN mkdir /bahn-alarm
+COPY --chown=poetry:poetry ./*.env /bahn-alarm
+COPY --chown=poetry:poetry ./app /bahn-alarm/app
 USER poetry
-WORKDIR /app
+WORKDIR /bahn-alarm
 
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "main:app"]
+CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "app.main:app"]
+
+FROM production AS dramatiq
+
+CMD [ "dramatiq", "app.tasks.tasks", "--processes 1", "--threads 1" ]
+
+FROM production AS periodiq
+
+CMD [ "periodiq", "app.tasks.tasks" ]

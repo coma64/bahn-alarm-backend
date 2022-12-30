@@ -3,17 +3,18 @@ Minimal FastAPI application taken directly from the tutorial.
 https://fastapi.tiangolo.com/
 """
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app import settings
 from app.database import init_tortoise_fastapi
 from app.routers import bahn, tracked_connections, authentication
-
+from app.tasks import tasks
 
 app = FastAPI()
 init_tortoise_fastapi(app)
 
-origins = ["http://localhost:8000", "http://localhost:5000", "http://localhost:4173"]
+origins = ["http://localhost:8000", "http://localhost:5000", "http://localhost:4173", "http://localhost"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,3 +39,9 @@ app.include_router(
     tags=["authentication"],
     router=authentication.router,
 )
+
+if settings.development_mode:
+
+    @app.get("/tasks/run-fetch-delay-info")
+    async def alarm() -> None:
+        tasks.periodic_fetch_connection_delay_info.send()

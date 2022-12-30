@@ -15,6 +15,10 @@ class User(models.Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     modified_at = fields.DatetimeField(auto_now=True)
 
+    push_notifications_subscription: fields.OneToOneRelation[
+        "PushNotificationsSubscription"
+    ]
+
     @classmethod
     async def login(cls, name: str, password: str) -> t.Union["User", None]:
         user = await cls.get_or_none(name=name)
@@ -90,6 +94,15 @@ class ConnectionDelayInfo(models.Model):
     delay_departure_minutes: int = fields.IntField()
     delay_arrival_minutes: int = fields.IntField()
     modified_at: datetime = fields.DatetimeField(auto_now=True)
+
+
+class PushNotificationsSubscription(models.Model):
+    user: fields.OneToOneRelation[User] = fields.OneToOneField(
+        "models.User",
+        related_name="push_notifications_subscription",
+        on_delete=fields.CASCADE,
+    )
+    subscription: dict = fields.JSONField()
 
 
 def _create_partial_input_model(

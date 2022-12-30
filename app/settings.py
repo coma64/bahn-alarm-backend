@@ -1,3 +1,5 @@
+import os
+
 from pydantic import BaseSettings
 
 
@@ -9,4 +11,4 @@ class _Settings(BaseSettings):
     redis_host: str
 
 
-settings = _Settings(["default.env", "override.env"])
+settings = _Settings([f"{os.getenv('FASTAPI_ENV', 'development')}.env", "override.env"])
