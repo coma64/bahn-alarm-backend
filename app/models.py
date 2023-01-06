@@ -80,6 +80,9 @@ class TrackedConnection(models.Model):
             ["origin_station", "destination_station", "hours", "minutes"]
         ]
 
+    def __str__(self) -> str:
+        return f"{self.origin_station} -> {self.destination_station}, {self.hours}:{self.minutes}"
+
 
 class ConnectionDelayInfo(models.Model):
     tracked_connection: fields.OneToOneRelation[

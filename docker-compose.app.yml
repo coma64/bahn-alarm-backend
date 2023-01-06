@@ -1,0 +1,30 @@
+services:
+  web:
+    container_name: bahn-alarm-web
+    build:
+      context: .
+      target: production
+    volumes:
+      - ./settings.env:/bahn-alarm/settings.env
+      - ./override.env:/bahn-alarm/settings.env
+      - ./vapid-keys:/bahn-alarm/vapid-keys
+    ports:
+      - 8000:8000
+  worker:
+    build:
+      context: .
+      target: production
+    command: dramatiq app.tasks.tasks --processes 2 --threads 2
+    volumes:
+      - ./settings.env:/bahn-alarm/settings.env
+      - ./override.env:/bahn-alarm/settings.env
+      - ./vapid-keys:/bahn-alarm/vapid-keys
+  scheduler:
+    build:
+      context: .
+      target: production
+    command: periodiq app.tasks.tasks
+    volumes:
+      - ./settings.env:/bahn-alarm/settings.env
+      - ./override.env:/bahn-alarm/settings.env
+      - ./vapid-keys:/bahn-alarm/vapid-keys

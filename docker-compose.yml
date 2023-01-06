@@ -3,34 +3,11 @@ services:
     image: postgres:15.1-bullseye
     restart: always
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432
     environment:
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: bahn_alarm
-  adminer:
-    profiles: ['adminer']
-    image: adminer:4.8.1-standalone
-    restart: always
-    ports:
-      - 8080:8080
   redis:
     image: redis:7.0.7
     ports:
-    - 6379:6379
-  web:
-    container_name: bahn-alarm-web
-    build:
-      context: .
-      target: production
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-    ports:
-      - 8000:8000
-  dramatiq:
-    build:
-      context: .
-      target: dramatiq
-  periodiq:
-    build:
-      context: .
-      target: periodiq
+    - 127.0.0.1:6379:6379

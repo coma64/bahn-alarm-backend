@@ -83,12 +83,4 @@ COPY pyproject.toml /bahn-alarm/
 WORKDIR /bahn-alarm
 
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "--certfile=/etc/letsencrypt/live/ba.coma64.me/cert.pem", "--keyfile=/etc/letsencrypt/live/ba.coma64.me/privkey.pem", "app.main:app"]
-
-FROM production AS dramatiq
-
-CMD [ "dramatiq", "app.tasks.tasks", "--processes 1", "--threads 1" ]
-
-FROM production AS periodiq
-
-CMD [ "periodiq", "app.tasks.tasks" ]
+CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "app.main:app"]

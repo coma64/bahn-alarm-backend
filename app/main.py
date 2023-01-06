@@ -7,12 +7,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import settings
-from app.database import init_tortoise_fastapi
+from app.database import initialize_tortoise_fastapi
 from app.routers import authentication, bahn, tracked_connections
 from app.tasks import tasks
 
 app = FastAPI()
-init_tortoise_fastapi(app)
+initialize_tortoise_fastapi(app)
 
 origins = [
     "http://localhost:8000",

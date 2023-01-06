@@ -34,8 +34,8 @@ class BahnTime(BaseModel):
 
 
 class Delay(BaseModel):
-    delay_departure_minutes: int = Field(..., alias="delay_departure")
-    delay_arrival_minutes: int = Field(..., alias="delay_arrival")
+    delay_departure_minutes: int = Field(0, alias="delay_departure")
+    delay_arrival_minutes: int = Field(0, alias="delay_arrival")
 
 
 class Connection(BaseModel):
@@ -44,7 +44,7 @@ class Connection(BaseModel):
     duration: timedelta = Field(..., alias="time")
     is_on_time: bool = Field(..., alias="ontime")
     is_canceled: bool = Field(..., alias="canceled")
-    delay: Delay | None
+    delay: Delay = Field(Delay)
 
     parse_departure = validator("departure", pre=True, allow_reuse=True)(
         parse_bahn_time(BahnTime)
@@ -59,7 +59,9 @@ class Connection(BaseModel):
 
 # TODO: make async
 def fetch_connections(
-    origin: str, destination: str, departure: t.Optional[datetime] = None
+    origin: str,
+    destination: str,
+    departure: t.Optional[datetime] = None,
 ) -> list[Connection]:
     return parse_obj_as(
         list[Connection],
@@ -68,7 +70,8 @@ def fetch_connections(
 
 
 def get_matching_connection(
-    connections: list[Connection], tracked_connection: models.TrackedConnection
+    connections: list[Connection],
+    tracked_connection: models.TrackedConnection,
 ) -> Connection | None:
     return next(
         (
