@@ -18,23 +18,23 @@ ORM_SETTINGS = {
     },
 }
 
-initialized_tortoise = False
+is_tortoise_initialized = False
 
 
 def initialize_tortoise_fastapi(app: FastAPI) -> None:
-    global initialized_tortoise
-    if initialized_tortoise:
+    global is_tortoise_initialized
+    if is_tortoise_initialized:
         return
-    initialized_tortoise = True
+    is_tortoise_initialized = True
 
     register_tortoise(app, config=ORM_SETTINGS)
 
 
 async def initialize_tortoise() -> None:
-    global initialized_tortoise
-    if initialized_tortoise:
+    global is_tortoise_initialized
+    if is_tortoise_initialized:
         return
-    initialized_tortoise = True
+    is_tortoise_initialized = True
 
     await Tortoise.init(config=ORM_SETTINGS)
 
@@ -43,13 +43,18 @@ async def close_tortoise_connections() -> None:
     await connections.close_all(discard=True)
 
 
-initialize_tortoise_sync = async_to_sync(initialize_tortoise)
+def initialize_tortoise_sync() -> None:
+    global is_tortoise_initialized
+    if is_tortoise_initialized:
+        return
+    is_tortoise_initialized = True
+
+    async_to_sync(Tortoise.init(config=ORM_SETTINGS))()
+
+
 close_tortoise_connections_sync = async_to_sync(close_tortoise_connections)
 
 
 class TortoiseDramatiqMiddleware(Middleware):
-    def __init__(self, loop: asyncio.AbstractEventLoop):
-        self.loop = loop
-
     def before_consumer_thread_shutdown(self, broker, worker):
         close_tortoise_connections_sync()

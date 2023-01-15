@@ -33,6 +33,7 @@ pywebpush = "^1.14.0"
 py-vapid = "^1.9.0"
 httpx = "^0.23.1"
 asgiref = "^3.6.0"
+ciso8601-wheels = "^2.2.0"
 
 
 [tool.poetry.dev-dependencies]
